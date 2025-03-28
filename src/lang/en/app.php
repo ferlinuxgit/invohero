@@ -20,6 +20,16 @@ return [
     'search' => 'Search',
     'filter' => 'Filter',
     'actions' => 'Actions',
+    'view' => 'View',
+    'all' => 'All',
+    'date' => 'Date',
+    'description' => 'Description',
+    'category' => 'Category',
+    'type' => 'Type',
+    'export' => 'Export',
+    'date_range' => 'Date Range',
+    'duplicate' => 'Duplicate',
+    'new_invoice' => 'New Invoice',
     
     // Dashboard
     'welcome' => 'Welcome to InvoHero',
@@ -34,7 +44,8 @@ return [
     // Invoices
     'invoice_list' => 'Invoice List',
     'invoice_number' => 'Invoice Number',
-    'invoice_date' => 'Issue Date',
+    'invoice_date' => 'Invoice Date',
+    'issue_date' => 'Issue Date',
     'due_date' => 'Due Date',
     'client' => 'Client',
     'amount' => 'Amount',
@@ -52,6 +63,24 @@ return [
     'phone' => 'Phone',
     'address' => 'Address',
     'tax_id' => 'Tax ID',
+    'active_clients' => 'Active Clients',
+    'avg_invoice' => 'Average per Invoice',
+    'growth' => 'Growth',
+    
+    // Accounting
+    'income' => 'Income',
+    'expense' => 'Expense',
+    'expenses' => 'Expenses',
+    'balance' => 'Balance',
+    'pending_invoices' => 'Pending Invoices',
+    'income_vs_expenses' => 'Income vs Expenses',
+    'expense_distribution' => 'Expense Distribution',
+    'this_month' => 'This Month',
+    'this_quarter' => 'This Quarter',
+    'this_year' => 'This Year',
+    'custom_period' => 'Custom Period',
+    'new_transaction' => 'New Transaction',
+    'vs_last_period' => 'vs previous period',
     
     // Months
     'january' => 'January',
