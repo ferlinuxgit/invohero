@@ -16,7 +16,7 @@ $dotenv->load();
 session_start();
 
 // Inicializar sistema de internacionalización
-App\Config\I18n::init();
+App\config\I18n::init();
 
 // Configuración de errores
 if (config('app.debug')) {
@@ -38,7 +38,7 @@ if (!empty($basePath)) {
 
 // Cambio de idioma
 if (isset($_GET['lang']) && in_array($_GET['lang'], ['es', 'en'])) {
-    App\Config\I18n::setLocale($_GET['lang']);
+    App\config\I18n::setLocale($_GET['lang']);
     
     // Redirigir a la misma página sin el parámetro de idioma
     $redirectUrl = strtok($request, '?');

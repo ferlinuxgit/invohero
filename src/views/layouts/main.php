@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="<?php echo App\Config\I18n::getLocale(); ?>">
+<html lang="<?php echo App\config\I18n::getLocale(); ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,8 +34,8 @@
     <!-- Language Switcher -->
     <div class="fixed top-4 right-4 z-50">
         <div class="flex bg-white rounded-lg shadow px-2 py-1">
-            <a href="?lang=es" class="px-2 py-1 <?php echo App\Config\I18n::getLocale() === 'es' ? 'font-bold text-blue-600' : 'text-gray-600'; ?>">ES</a>
-            <a href="?lang=en" class="px-2 py-1 <?php echo App\Config\I18n::getLocale() === 'en' ? 'font-bold text-blue-600' : 'text-gray-600'; ?>">EN</a>
+            <a href="?lang=es" class="px-2 py-1 <?php echo App\config\I18n::getLocale() === 'es' ? 'font-bold text-blue-600' : 'text-gray-600'; ?>">ES</a>
+            <a href="?lang=en" class="px-2 py-1 <?php echo App\config\I18n::getLocale() === 'en' ? 'font-bold text-blue-600' : 'text-gray-600'; ?>">EN</a>
         </div>
     </div>
 
@@ -91,7 +91,7 @@
     <!-- Inicializar plugins en base al idioma -->
     <script>
         // Configurar idioma para DataTables
-        const locale = '<?php echo App\Config\I18n::getLocale(); ?>';
+        const locale = '<?php echo App\config\I18n::getLocale(); ?>';
         const dtLanguageUrl = locale === 'es' 
             ? '//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json'
             : '//cdn.datatables.net/plug-ins/1.13.7/i18n/en-GB.json';

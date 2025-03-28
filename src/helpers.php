@@ -1,6 +1,6 @@
 <?php
 
-use App\Config\I18n;
+use App\config\I18n;
 
 /**
  * Función para traducir textos
