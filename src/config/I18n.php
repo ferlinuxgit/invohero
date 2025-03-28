@@ -1,6 +1,6 @@
 <?php
 
-namespace App\config;
+namespace App\Config;
 
 /**
  * Clase para manejar la internacionalización (i18n) de la aplicación
