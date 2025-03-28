@@ -30,6 +30,8 @@ return [
     'date_range' => 'Rango de fechas',
     'duplicate' => 'Duplicar',
     'new_invoice' => 'Nueva Factura',
+    'profile' => 'Perfil',
+    'all_rights_reserved' => 'Todos los derechos reservados',
     
     // Dashboard
     'welcome' => 'Bienvenido a InvoHero',
