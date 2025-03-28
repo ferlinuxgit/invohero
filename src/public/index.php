@@ -1,4 +1,7 @@
 <?php
+/**
+ * Archivo de entrada principal de la aplicación
+ */
 
 // Definir la ruta base si no está definida (cuando se accede directamente)
 if (!defined('BASE_PATH')) {
@@ -27,72 +30,42 @@ if (config('app.debug')) {
     error_reporting(0);
 }
 
-// Router básico
-$request = $_SERVER['REQUEST_URI'];
-
-// Obtener la ruta base desde la configuración
-$basePath = config('app.base_path', '');
-
-// Eliminar parámetros GET de la URL
-$uri = parse_url($request, PHP_URL_PATH);
-
-// Eliminar el path base de la URL si existe
-if (!empty($basePath) && strpos($uri, $basePath) === 0) {
-    $uri = substr($uri, strlen($basePath));
+// Cargar configuración según el entorno
+if (APP_ENV === 'production') {
+    require_once __DIR__ . '/../config/app.prod.php';
+} else {
+    require_once __DIR__ . '/../config/app.dev.php';
 }
 
-// Asegurarse de que la URI comienza con /
-$uri = '/' . ltrim($uri, '/');
+require_once __DIR__ . '/../config/i18n.php';
 
-// Cambio de idioma
-if (isset($_GET['lang']) && in_array($_GET['lang'], ['es', 'en'])) {
-    App\config\I18n::setLocale($_GET['lang']);
-    
+// Cargar configuración de base de datos según el entorno
+if (APP_ENV === 'production') {
+    require_once __DIR__ . '/../config/database.prod.php';
+} else {
+    require_once __DIR__ . '/../config/database.dev.php';
+}
+
+// Cargar controlador base
+require_once __DIR__ . '/../controllers/BaseController.php';
+
+// Obtener la ruta actual
+$route = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+
+// Manejar cambio de idioma
+if (isset($_GET['lang']) && in_array($_GET['lang'], AVAILABLE_LANGS)) {
+    I18n::setLocale($_GET['lang']);
     // Redirigir a la misma página sin el parámetro de idioma
-    $redirectUrl = $uri;
-    redirect($redirectUrl);
+    $redirectUrl = $route;
+    header('Location: ' . $redirectUrl);
+    exit;
 }
 
-// Routing básico
-switch ($uri) {
-    case '/':
-        require BASE_PATH . '/src/views/dashboard.php';
-        break;
-    case '/invoices':
-        require BASE_PATH . '/src/views/invoices.php';
-        break;
-    case '/clients':
-        require BASE_PATH . '/src/views/clients.php';
-        break;
-    case '/accounting':
-        require BASE_PATH . '/src/views/accounting.php';
-        break;
-    default:
-        // Comprobar si es un archivo estático en la carpeta public
-        $publicPath = __DIR__ . parse_url($uri, PHP_URL_PATH);
-        if (file_exists($publicPath) && is_file($publicPath)) {
-            // Es un archivo estático, servir directamente
-            $ext = pathinfo($publicPath, PATHINFO_EXTENSION);
-            $contentTypes = [
-                'css' => 'text/css',
-                'js' => 'application/javascript',
-                'jpg' => 'image/jpeg',
-                'jpeg' => 'image/jpeg',
-                'png' => 'image/png',
-                'gif' => 'image/gif',
-                'svg' => 'image/svg+xml',
-            ];
-            
-            if (isset($contentTypes[$ext])) {
-                header('Content-Type: ' . $contentTypes[$ext]);
-            }
-            
-            readfile($publicPath);
-            exit;
-        }
-        
-        // No es un archivo estático, mostrar error 404
-        http_response_code(404);
-        require BASE_PATH . '/src/views/404.php';
-        break;
-} 
+// Cargar traducciones
+I18n::loadTranslations();
+
+// Inicializar el controlador
+$controller = new BaseController();
+
+// Manejar la ruta
+$controller->handleRoute($route); 
