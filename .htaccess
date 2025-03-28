@@ -1,0 +1,13 @@
+RewriteEngine On
+
+# Si el directorio o archivo no existe, continúa con la reescritura
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+
+# Redirigir todas las peticiones al index.php
+RewriteRule ^(.*)$ index.php [QSA,L]
+
+# PHP settings
+php_value display_errors On
+php_value mbstring.http_input auto
+php_value date.timezone Europe/Madrid 
