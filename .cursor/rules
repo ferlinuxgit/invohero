@@ -1,0 +1,196 @@
+# Reglas de Cursor para InvoHero
+
+## Documentación
+
+### Enlaces a Documentación
+- README: docs/README.md
+- Introducción: docs/introduction.md
+- Arquitectura: docs/architecture.md
+- Instalación: docs/installation.md
+- Configuración: docs/configuration.md
+- Estructura del Proyecto: docs/project-structure.md
+- API: docs/api.md
+- Base de Datos: docs/database.md
+- Internacionalización: docs/i18n.md
+- Frontend: docs/frontend.md
+- Seguridad: docs/security.md
+- Despliegue: docs/deployment.md
+- Mantenimiento: docs/maintenance.md
+
+## Estructura del Proyecto
+
+### Directorios Principales
+- src/: Código fuente principal
+- public/: Archivos públicos
+- docs/: Documentación
+- tests/: Pruebas
+- vendor/: Dependencias
+
+### Convenciones de Nombrado
+- Controladores: PascalCase + Controller.php
+- Modelos: PascalCase.php
+- Vistas: snake_case.php
+- Helpers: PascalCase + Helper.php
+- Servicios: PascalCase + Service.php
+
+## Estándares de Código
+
+### PHP
+- Versión mínima: PHP 8.x
+- Estilo de código: PSR-12
+- Tipado estricto: Habilitado
+- Documentación: PHPDoc
+
+### JavaScript
+- Versión: ES6+
+- Estilo: Airbnb JavaScript Style Guide
+- Linting: ESLint
+- Formateo: Prettier
+
+### CSS
+- Framework: Tailwind CSS
+- Estructura: BEM
+- Preprocesador: PostCSS
+
+## Seguridad
+
+### Autenticación
+- JWT para API
+- 2FA opcional
+- Tokens de sesión seguros
+
+### Validación
+- Sanitización de inputs
+- Validación de datos
+- Protección CSRF
+
+### Encriptación
+- Almacenamiento seguro de contraseñas
+- Encriptación de datos sensibles
+- Certificados SSL/TLS
+
+## Base de Datos
+
+### MySQL
+- Versión: 8.x
+- Charset: utf8mb4
+- Collation: utf8mb4_unicode_ci
+
+### Migraciones
+- Versionado de esquema
+- Rollbacks automáticos
+- Seeds para datos de prueba
+
+## API
+
+### Endpoints
+- RESTful
+- Versionado: /api/v1/
+- Autenticación: JWT
+- Rate limiting: 60 req/min
+
+### Respuestas
+- Formato: JSON
+- Códigos HTTP estándar
+- Paginación automática
+
+## Frontend
+
+### Componentes
+- Responsive design
+- Accesibilidad WCAG 2.1
+- Optimización de rendimiento
+
+### Assets
+- Compilación con Vite
+- Minificación automática
+- Caché de assets
+
+## Testing
+
+### Tipos de Pruebas
+- Unitarias
+- Integración
+- E2E
+- Seguridad
+
+### Cobertura
+- Mínimo: 80%
+- Reportes automáticos
+- CI/CD integrado
+
+## Despliegue
+
+### Requisitos
+- PHP 8.x
+- MySQL 8.x
+- Node.js 16+
+- Composer 2.x
+
+### Proceso
+- CI/CD con GitHub Actions
+- Despliegue automatizado
+- Rollback automático
+
+## Mantenimiento
+
+### Logs
+- Rotación diaria
+- Retención: 14 días
+- Niveles: error, warning, info
+
+### Backups
+- Diarios automáticos
+- Retención: 30 días
+- Verificación automática
+
+## Internacionalización
+
+### Idiomas
+- Español (default)
+- Inglés
+- Extensible
+
+### Formatos
+- Fechas: ISO 8601
+- Moneda: ISO 4217
+- Números: ISO 80000-1
+
+## Monitoreo
+
+### Métricas
+- Uso de CPU/RAM
+- Tiempo de respuesta
+- Errores y excepciones
+
+### Alertas
+- Umbrales configurables
+- Notificaciones por email
+- Dashboard en tiempo real
+
+## Contribución
+
+### Proceso
+1. Fork del repositorio
+2. Rama feature/fix
+3. Tests pasados
+4. Pull request
+5. Code review
+6. Merge
+
+### Guías
+- Guía de contribución
+- Guía de estilo
+- Guía de commits
+
+## Licencia
+
+### Tipo
+- MIT License
+- Código abierto
+- Uso comercial permitido
+
+### Requisitos
+- Mantener copyright
+- Incluir licencia
+- Documentar cambios 
