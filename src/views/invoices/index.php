@@ -1,187 +1,129 @@
 <?php
 // Incluir el componente de encabezado
 include __DIR__ . '/../components/page-header.php';
-?>
 
-<!-- Encabezado de la página -->
-<?php
+// Configurar el encabezado
 $title = $lang === 'es' ? 'Facturas' : 'Invoices';
 $icon = 'fas fa-file-invoice';
 $action_text = $lang === 'es' ? 'Nueva Factura' : 'New Invoice';
 $action_url = '/invoices/create';
 $action_icon = 'fas fa-plus';
+
+// Incluir el encabezado una sola vez
 include __DIR__ . '/../components/page-header.php';
+
+// Configurar filtros
+$filters = [
+    [
+        'label' => $lang === 'es' ? 'Estado' : 'Status',
+        'type' => 'select',
+        'options' => [
+            ['value' => '', 'label' => $lang === 'es' ? 'Todos' : 'All'],
+            ['value' => 'draft', 'label' => $lang === 'es' ? 'Borrador' : 'Draft'],
+            ['value' => 'sent', 'label' => $lang === 'es' ? 'Enviada' : 'Sent'],
+            ['value' => 'paid', 'label' => $lang === 'es' ? 'Pagada' : 'Paid'],
+            ['value' => 'overdue', 'label' => $lang === 'es' ? 'Vencida' : 'Overdue']
+        ]
+    ],
+    [
+        'label' => $lang === 'es' ? 'Cliente' : 'Client',
+        'type' => 'select',
+        'options' => array_map(function($client) {
+            return ['value' => $client['id'], 'label' => $client['name']];
+        }, $clients)
+    ],
+    [
+        'label' => $lang === 'es' ? 'Fecha desde' : 'Date from',
+        'type' => 'date'
+    ],
+    [
+        'label' => $lang === 'es' ? 'Fecha hasta' : 'Date to',
+        'type' => 'date'
+    ]
+];
+
+// Configurar columnas
+$columns = [
+    [
+        'key' => 'number',
+        'label' => $lang === 'es' ? 'Número' : 'Number',
+        'class' => 'font-medium text-gray-900'
+    ],
+    [
+        'key' => 'client_name',
+        'label' => $lang === 'es' ? 'Cliente' : 'Client'
+    ],
+    [
+        'key' => 'date',
+        'label' => $lang === 'es' ? 'Fecha' : 'Date',
+        'render' => function($item) {
+            return date('d/m/Y', strtotime($item['date']));
+        }
+    ],
+    [
+        'key' => 'total',
+        'label' => $lang === 'es' ? 'Total' : 'Total',
+        'render' => function($item) {
+            return number_format($item['total'], 2, ',', '.') . ' €';
+        }
+    ],
+    [
+        'key' => 'status',
+        'label' => $lang === 'es' ? 'Estado' : 'Status',
+        'render' => function($item) use ($lang) {
+            $statusClasses = [
+                'draft' => 'bg-gray-100 text-gray-800',
+                'sent' => 'bg-blue-100 text-blue-800',
+                'paid' => 'bg-green-100 text-green-800',
+                'overdue' => 'bg-red-100 text-red-800'
+            ];
+            $statusLabels = [
+                'draft' => $lang === 'es' ? 'Borrador' : 'Draft',
+                'sent' => $lang === 'es' ? 'Enviada' : 'Sent',
+                'paid' => $lang === 'es' ? 'Pagada' : 'Paid',
+                'overdue' => $lang === 'es' ? 'Vencida' : 'Overdue'
+            ];
+            return '<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ' . 
+                   $statusClasses[$item['status']] . '">' . 
+                   $statusLabels[$item['status']] . '</span>';
+        }
+    ]
+];
+
+// Configurar acciones
+$actions = [
+    [
+        'type' => 'link',
+        'url' => function($id) { return "/invoices/$id"; },
+        'class' => 'text-blue-600 hover:text-blue-900',
+        'icon' => 'fas fa-eye'
+    ],
+    [
+        'type' => 'link',
+        'url' => function($id) { return "/invoices/$id/edit"; },
+        'class' => 'text-blue-600 hover:text-blue-900',
+        'icon' => 'fas fa-edit'
+    ],
+    [
+        'type' => 'button',
+        'onclick' => 'deleteInvoice',
+        'class' => 'text-red-600 hover:text-red-900',
+        'icon' => 'fas fa-trash'
+    ]
+];
+
+// Configurar paginación
+$pagination = [
+    'from' => 1,
+    'to' => 10,
+    'total' => 97,
+    'current_page' => 1,
+    'last_page' => 10
+];
+
+// Incluir el componente de listado
+include __DIR__ . '/../components/listing.php';
 ?>
-
-<!-- Filtros -->
-<div class="bg-white rounded-lg shadow-sm p-4 mb-6">
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
-                <?php echo $lang === 'es' ? 'Estado' : 'Status'; ?>
-            </label>
-            <select class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                <option value=""><?php echo $lang === 'es' ? 'Todos' : 'All'; ?></option>
-                <option value="draft"><?php echo $lang === 'es' ? 'Borrador' : 'Draft'; ?></option>
-                <option value="sent"><?php echo $lang === 'es' ? 'Enviada' : 'Sent'; ?></option>
-                <option value="paid"><?php echo $lang === 'es' ? 'Pagada' : 'Paid'; ?></option>
-                <option value="overdue"><?php echo $lang === 'es' ? 'Vencida' : 'Overdue'; ?></option>
-            </select>
-        </div>
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
-                <?php echo $lang === 'es' ? 'Cliente' : 'Client'; ?>
-            </label>
-            <select class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                <option value=""><?php echo $lang === 'es' ? 'Todos' : 'All'; ?></option>
-                <?php foreach ($clients as $client): ?>
-                <option value="<?php echo $client['id']; ?>">
-                    <?php echo htmlspecialchars($client['name']); ?>
-                </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
-                <?php echo $lang === 'es' ? 'Fecha desde' : 'Date from'; ?>
-            </label>
-            <input type="date" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-        </div>
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
-                <?php echo $lang === 'es' ? 'Fecha hasta' : 'Date to'; ?>
-            </label>
-            <input type="date" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-        </div>
-    </div>
-    <div class="mt-4 flex justify-end">
-        <button class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
-            <i class="fas fa-filter mr-2"></i>
-            <?php echo $lang === 'es' ? 'Filtrar' : 'Filter'; ?>
-        </button>
-    </div>
-</div>
-
-<!-- Lista de facturas -->
-<div class="bg-white rounded-lg shadow-sm overflow-hidden">
-    <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-                <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        <?php echo $lang === 'es' ? 'Número' : 'Number'; ?>
-                    </th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        <?php echo $lang === 'es' ? 'Cliente' : 'Client'; ?>
-                    </th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        <?php echo $lang === 'es' ? 'Fecha' : 'Date'; ?>
-                    </th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        <?php echo $lang === 'es' ? 'Total' : 'Total'; ?>
-                    </th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        <?php echo $lang === 'es' ? 'Estado' : 'Status'; ?>
-                    </th>
-                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        <?php echo $lang === 'es' ? 'Acciones' : 'Actions'; ?>
-                    </th>
-                </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-                <?php foreach ($invoices as $invoice): ?>
-                <tr>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        <?php echo htmlspecialchars($invoice['number']); ?>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <?php echo htmlspecialchars($invoice['client_name']); ?>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <?php echo date('d/m/Y', strtotime($invoice['date'])); ?>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <?php echo number_format($invoice['total'], 2, ',', '.'); ?> €
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                            <?php
-                            switch ($invoice['status']) {
-                                case 'draft':
-                                    echo 'bg-gray-100 text-gray-800';
-                                    break;
-                                case 'sent':
-                                    echo 'bg-blue-100 text-blue-800';
-                                    break;
-                                case 'paid':
-                                    echo 'bg-green-100 text-green-800';
-                                    break;
-                                case 'overdue':
-                                    echo 'bg-red-100 text-red-800';
-                                    break;
-                            }
-                            ?>">
-                            <?php
-                            switch ($invoice['status']) {
-                                case 'draft':
-                                    echo $lang === 'es' ? 'Borrador' : 'Draft';
-                                    break;
-                                case 'sent':
-                                    echo $lang === 'es' ? 'Enviada' : 'Sent';
-                                    break;
-                                case 'paid':
-                                    echo $lang === 'es' ? 'Pagada' : 'Paid';
-                                    break;
-                                case 'overdue':
-                                    echo $lang === 'es' ? 'Vencida' : 'Overdue';
-                                    break;
-                            }
-                            ?>
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <div class="flex justify-end space-x-2">
-                            <a href="/invoices/<?php echo $invoice['id']; ?>" 
-                               class="text-blue-600 hover:text-blue-900">
-                                <i class="fas fa-eye"></i>
-                            </a>
-                            <a href="/invoices/<?php echo $invoice['id']; ?>/edit" 
-                               class="text-blue-600 hover:text-blue-900">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                            <button onclick="deleteInvoice(<?php echo $invoice['id']; ?>)" 
-                                    class="text-red-600 hover:text-red-900">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-    </div>
-</div>
-
-<!-- Paginación -->
-<div class="mt-4 flex justify-between items-center">
-    <div class="text-sm text-gray-700">
-        <?php echo $lang === 'es' ? 'Mostrando' : 'Showing'; ?> 
-        <span class="font-medium">1</span> 
-        <?php echo $lang === 'es' ? 'a' : 'to'; ?> 
-        <span class="font-medium">10</span> 
-        <?php echo $lang === 'es' ? 'de' : 'of'; ?> 
-        <span class="font-medium">97</span> 
-        <?php echo $lang === 'es' ? 'resultados' : 'results'; ?>
-    </div>
-    <div class="flex space-x-2">
-        <button class="px-3 py-1 border rounded-lg text-sm text-gray-700 hover:bg-gray-50">
-            <?php echo $lang === 'es' ? 'Anterior' : 'Previous'; ?>
-        </button>
-        <button class="px-3 py-1 border rounded-lg text-sm text-gray-700 hover:bg-gray-50">
-            <?php echo $lang === 'es' ? 'Siguiente' : 'Next'; ?>
-        </button>
-    </div>
-</div>
 
 <script>
 function deleteInvoice(id) {
